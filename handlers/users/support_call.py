@@ -82,5 +82,5 @@ async def exit_support(call: types.CallbackQuery, state: FSMContext, callback_da
             await second_state.reset_state()
             await bot.send_message(user_id, "Пользователь завершил сеанс техподдержки")
 
-    await call.message.edit_text("Yana savol bo'lsa /ask ni yozip savol berishingiz mumkun")
+    await call.message.answer("Yana savol bo'lsa /ask ni yozip savol berishingiz mumkun")
     await state.reset_state()

@@ -13,7 +13,7 @@ from loader import dp, bot
 
 
 import sqlite3
-from fuzzywuzzy import fuzz
+# from fuzzywuzzy import fuzz
 
 from translation import _
 

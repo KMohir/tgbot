@@ -38,12 +38,23 @@ async def get_support_manager():
 
 async def support_keyboard(message,messages, user_id=None):
     lang = db.get_lang(message.from_user.id)
+    keyboard = InlineKeyboardMarkup()
     if user_id:
         # Есле указан второй айдишник - значит эта кнопка для оператора
 
         contact_id = int(user_id)
         as_user = "no"
         text = _("Javob yozish uchun shu tugmani bosing",lang)
+        keyboard.add(
+            InlineKeyboardButton(
+                text=text,
+                callback_data=support_callback.new(
+                    messages=messages,
+                    user_id=contact_id,
+                    as_user=as_user
+                )
+            )
+        )
 
     else:
         # Есле не указан второй айдишник - значит эта кнопка для пользователя
@@ -59,32 +70,30 @@ async def support_keyboard(message,messages, user_id=None):
 
         if messages == "one":
             text = _("Texnik yordamga ga xabar yozing",lang)
-        else:
-            text = _("Javob yozish uchun shu tugmani bosing",lang)
 
-    keyboard = InlineKeyboardMarkup()
+
+
+            keyboard.add(
+                InlineKeyboardButton(
+                    text=text,
+                    callback_data=support_callback.new(
+                        messages=messages,
+                        user_id=contact_id,
+                        as_user=as_user
+                    )
+                )
+            )
+
+            return keyboard
+
     keyboard.add(
         InlineKeyboardButton(
-            text=text,
-            callback_data=support_callback.new(
-                messages=messages,
-                user_id=contact_id,
-                as_user=as_user
+            text=_("Rahmat savolimga javob oldim",lang),
+            callback_data=cancel_support_callback.new(
+                user_id=contact_id
             )
         )
     )
-
-    if messages == "one":
-        lang = db.get_lang(message.from_user.id)
-        # Добавляем кнопку завершения сеанса, если передумали звонить в поддержку
-        keyboard.add(
-            InlineKeyboardButton(
-                text=_("Rahmat savolimga javob oldim",lang),
-                callback_data=cancel_support_callback.new(
-                    user_id=contact_id
-                )
-            )
-        )
     return keyboard
 
 
