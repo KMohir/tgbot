@@ -76,14 +76,14 @@ async def get_support_message(message: types.Message, state: FSMContext):
 
             try:
                 reply = db.get_question(second_id)
-                await bot.send_message(second_id, f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi")
+                await bot.send_message(second_id, _(f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi",lang))
 
             except Exception:
                 print('')
 
             keyboard = await support_keyboard(message,messages="one", user_id=message.from_user.id)
             await message.copy_to(second_id)
-            await message.answer("Yana savol bolsa /ask buyrugini ishlating")
+            await bot.send_message(second_id,_("Yana savol bolsa /ask buyrugini ishlating",lang))
     await state.reset_state()
 @dp.callback_query_handler(cancel_support_callback.filter(), state=["in_support", "wait_in_support", None])
 async def exit_support(call: types.CallbackQuery, state: FSMContext, callback_data: dict):

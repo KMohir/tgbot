@@ -33,13 +33,14 @@ async def bot_echo(message: types.Message):
 # Эхо хендлер, куда летят ВСЕ сообщения с указанным состоянием
 @dp.message_handler(state="*", content_types=types.ContentTypes.ANY)
 async def bot_echo_all(message: types.Message, state: FSMContext):
+    lang=db.get_lang(message.from_user.id)
     state = await state.get_state()
     try:
         lang=db.get_lang(message.from_user.id)
         await message.answer(_('Pastdagi tugmani bosing tugmani bosing',lang))
     except Exception as e:
 
-        await message.answer('Tugmani bosing')
+        await message.answer(_('Tugmani bosing',lang))
     # await message.answer(f"Эхо в состоянии <code>{state}</code>.\n"
     #                      f"\nСодержание сообщения:\n"
     #                      f"<code>{message}</code>")

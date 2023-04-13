@@ -36,6 +36,10 @@ translations={
         "Pastdagi tugmani bosing tugmani bosing":"Нажмите кнопку внизу Нажмите кнопку",
         "Ro'yxatdan o'tdingiz":"Вы прошли регистрацию ",
         "Rahmat savolimga javob oldim":"Спасибо, что получили ответ на мой вопрос",
+        "Biz haqimizda":"О нас",
+        "Sizni <code>{reply}</code> ushbu savolingizga javob berildi":"Вы получите <code>{reply}</code> ответ на этот вопрос",
+        "Yana savol bolsa /ask buyrugini ishlating":"Снова запустите команду / ask, если у вас есть вопрос",
+
     }
 
 }
