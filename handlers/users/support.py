@@ -18,15 +18,15 @@ import sqlite3
 from translation import _
 
 
-def recognize_question(question,questions):
-    recognized={'id':'','percent':0}
-    for key, value in questions.items():
-        for q in value:
-            percent=fuzz.ratio(question,q)
-            if percent>recognized['percent']:
-                recognized['id']=key
-                recognized['percent']=percent
-    return recognized['id']
+# def recognize_question(question,questions):
+#     recognized={'id':'','percent':0}
+#     for key, value in questions.items():
+#         for q in value:
+#             percent=fuzz.ratio(question,q)
+#             if percent>recognized['percent']:
+#                 recognized['id']=key
+#                 recognized['percent']=percent
+#     return recognized['id']
 
 class Database:
     def __init__(self,db_file):

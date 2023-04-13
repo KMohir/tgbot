@@ -55,8 +55,16 @@ async def get_support_message(message: types.Message, state: FSMContext):
             lang = db.get_lang(message.from_user.id)
             # await bot.send_message(second_id,f"Sizga {str(name)} userdan xat \n@{message.from_user.username}\n nomeri {phone}\n")
             keyboard = await support_keyboard(message,messages="one", user_id=message.from_user.id)
+            db.add_questions(message.from_user.id,message.text)
 
+            try:
+                reply = db.get_question(second_id)
+                await bot.send_message(second_id,f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi")
+            except Exception:
+                print('')
             await bot.send_message(second_id,f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.text}", reply_markup=keyboard)
+
+
 
             await bot.send_message(-1001712239399,
                                    f"Sizga {str(name)} userdan xat \n telegramdagi accaunti@{message.from_user.username}\n nomeri {phone}\nSavol {message.text}")
@@ -64,8 +72,15 @@ async def get_support_message(message: types.Message, state: FSMContext):
         else:
 
             lang = db.get_lang(message.from_user.id)
-            await bot.send_message(second_id,
-                                   _("Sizga xat! Quyidagi tugmani bosish orqali javob berishingiz mumkin",lang))
+            db.add_questions(message.from_user.id, message.text)
+
+            try:
+                reply = db.get_question(second_id)
+                await bot.send_message(second_id, f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi")
+                print(111111)
+            except Exception:
+                print('')
+
             keyboard = await support_keyboard(message,messages="one", user_id=message.from_user.id)
             await message.copy_to(second_id, reply_markup=keyboard)
 

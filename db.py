@@ -10,15 +10,22 @@ class Database:
         with self.conn:
             result=self.cursor.execute("SELECT id,questions FROM support;",()).fetchall()
             data={}
-            print(result)
+
             for row in result:
                 questions=tuple(row[1].split(":"))
                 data[row[0]]=questions
             return data
-
-    def get_answer(self,answer_id):
+    def add_questions(self,userid,question):
         with self.conn:
-            return self.cursor.execute("SELECT answer from support WHERE id=?",(answer_id,)).fetchone()
+            return self.cursor.execute("INSERT INTO userquestions (userid,question) VALUES (?,?)",(userid,question))
+
+    def get_question(self, answer_id):
+        with self.conn:
+            return self.cursor.execute("SELECT question from userquestions WHERE userid=?",
+                                       (answer_id,)).fetchall()[-1][0]
+    def question(self,answer_id):
+        with self.conn:
+            return self.cursor.execute("SELECT question from userquestions WHERE id=?",(answer_id,)).fetchone()
     def user_exists(self,user_id):
         with self.conn:
             result=self.cursor.execute("SELECT * FROM users where user_id=?",(user_id,)).fetchall()
