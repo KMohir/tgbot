@@ -57,11 +57,11 @@ async def get_support_message(message: types.Message, state: FSMContext):
             keyboard = await support_keyboard(message,messages="one", user_id=message.from_user.id)
             db.add_questions(message.from_user.id,message.text)
 
-            try:
-                reply = db.get_question(second_id)
-                await bot.send_message(second_id,f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi")
-            except Exception:
-                print('')
+            # try:
+            #     reply = db.get_question(second_id)
+            #     await bot.send_message(second_id,f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi")
+            # except Exception:
+            #     print('')
             await bot.send_message(second_id,f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.text}", reply_markup=keyboard)
 
 
@@ -77,13 +77,13 @@ async def get_support_message(message: types.Message, state: FSMContext):
             try:
                 reply = db.get_question(second_id)
                 await bot.send_message(second_id, f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi")
-                print(111111)
+
             except Exception:
                 print('')
 
             keyboard = await support_keyboard(message,messages="one", user_id=message.from_user.id)
-            await message.copy_to(second_id, reply_markup=keyboard)
-
+            await message.copy_to(second_id)
+            await message.answer("Yana savol bolsa /ask buyrugini ishlating")
     await state.reset_state()
 @dp.callback_query_handler(cancel_support_callback.filter(), state=["in_support", "wait_in_support", None])
 async def exit_support(call: types.CallbackQuery, state: FSMContext, callback_data: dict):
@@ -97,5 +97,5 @@ async def exit_support(call: types.CallbackQuery, state: FSMContext, callback_da
             await second_state.reset_state()
             await bot.send_message(user_id, "Пользователь завершил сеанс техподдержки")
 
-    await call.message.answer("Yana savol bo'lsa /ask ni yozip savol berishingiz mumkun")
+    await call.message.answer("Protestim bu sizni  bilimingzini ssinash uchun qilingan platforma")
     await state.reset_state()

@@ -1,5 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from aiogram.types import ReplyKeyboardRemove
 
 from db import db
 from loader import dp
@@ -17,10 +18,10 @@ async def bot_echo(message: types.Message):
 async def bot_echo(message: types.Message,state: FSMContext):
     if message.text == "O'zbek tili":
         db.change_lang(message.from_user.id, 'uz')
-        await message.answer("Til o'zbek tiliga o'zgartirildi")
+        await message.answer("Til o'zbek tiliga o'zgartirildi",reply_markup=ReplyKeyboardRemove())
     if message.text == "Русский язык":
         db.change_lang(message.from_user.id, 'ru')
-        await message.answer("Язык изменился на русском")
+        await message.answer("Язык изменился на русском",reply_markup=ReplyKeyboardRemove())
     await state.finish()
 # Эхо хендлер, куда летят текстовые сообщения без указанного состояния
 @dp.message_handler(state=None)

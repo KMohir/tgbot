@@ -83,17 +83,18 @@ async def support_keyboard(message,messages, user_id=None):
                     )
                 )
             )
+            keyboard.add(
+                InlineKeyboardButton(
+                    text=_("Biz haqimizda", lang),
+                    callback_data=cancel_support_callback.new(
+                        user_id=contact_id
+                    )
+                )
+            )
 
             return keyboard
 
-    keyboard.add(
-        InlineKeyboardButton(
-            text=_("Rahmat savolimga javob oldim",lang),
-            callback_data=cancel_support_callback.new(
-                user_id=contact_id
-            )
-        )
-    )
+
     return keyboard
 
 
