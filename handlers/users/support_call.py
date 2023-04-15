@@ -55,34 +55,43 @@ async def get_support_message(message: types.Message, state: FSMContext):
             lang = db.get_lang(message.from_user.id)
             # await bot.send_message(second_id,f"Sizga {str(name)} userdan xat \n@{message.from_user.username}\n nomeri {phone}\n")
             keyboard = await support_keyboard(message,messages="one", user_id=message.from_user.id)
-            print(222222222222222222)
+            db.add_questions(message.from_user.id, message.message_id)
             if message.text==None:
                 await message.copy_to(second_id,caption=f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.caption}", reply_markup=keyboard)
             else:
-                await bot.send_message(second_id,f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.text}", reply_markup=keyboard)
+                await bot.send_message(second_id,
+                                       f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.text}",
+                                       reply_markup=keyboard)
+            if message.text==None:
+                await message.copy_to(-1001712239399,caption=f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.caption}", reply_markup=keyboard)
+            else:
+                await bot.send_message(-1001712239399,
+                                       f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.text}",
+                                       reply_markup=keyboard)
+            # try:
+            #     reply = db.get_question(second_id)
+            #     await bot.send_message(second_id,f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi")
+            # except Exception:
+            #     print('')
 
-            await bot.send_message(-1001712239399,
-                                   f"Sizga {str(name)} userdan xat \n telegramdagi accaunti@{message.from_user.username}\n nomeri {phone}\nSavol {message.text}")
+
+
+
 
         else:
 
             lang = db.get_lang(message.from_user.id)
-            db.add_questions(message.from_user.id, message.text)
-
+            db.add_questions(message.from_user.id, message.message_id)
+            reply = db.get_question(second_id)
+            keyboard = await support_keyboard(message,messages="one", user_id=message.from_user.id)
             try:
-                if message.text == None:
-                    await message.copy_to(second_id,
+                await message.copy_to(second_id, reply_to_message_id=reply,
                                           caption=message.caption)
-                else:
-                    await bot.send_message(second_id,
-                                           f"Savol Sizga xat")
-
             except Exception:
                 print('')
-            print(message.text)
-            reply = db.get_question(second_id)
-            # await message.copy_to(second_id,caption=_(f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi",lang))
 
+
+            await bot.send_message(second_id,_("Yana savol bolsa /ask buyrugini ishlating",lang))
     await state.reset_state()
 @dp.callback_query_handler(cancel_support_callback.filter(), state=["in_support", "wait_in_support", None])
 async def exit_support(call: types.CallbackQuery, state: FSMContext, callback_data: dict):
@@ -96,5 +105,5 @@ async def exit_support(call: types.CallbackQuery, state: FSMContext, callback_da
             await second_state.reset_state()
             await bot.send_message(user_id, "Пользователь завершил сеанс техподдержки")
 
-    await call.message.answer("Yana savol bo'lsa /ask ni yozip savol berishingiz mumkun")
+    await call.message.answer("Protestim bu sizni  bilimingzini ssinash uchun qilingan platforma")
     await state.reset_state()
