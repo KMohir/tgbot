@@ -66,8 +66,7 @@ async def get_support_message(message: types.Message, state: FSMContext):
                 await message.copy_to(-1001712239399,caption=f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.caption}", reply_markup=keyboard)
             else:
                 await bot.send_message(-1001712239399,
-                                       f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.text}",
-                                       reply_markup=keyboard)
+                                       f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.text}")
             # try:
             #     reply = db.get_question(second_id)
             #     await bot.send_message(second_id,f"Sizni <code>{reply}</code> ushbu savolingizga javob berildi")
@@ -80,7 +79,7 @@ async def get_support_message(message: types.Message, state: FSMContext):
 
         else:
 
-            lang = db.get_lang(message.from_user.id)
+
             db.add_questions(message.from_user.id, message.message_id)
             reply = db.get_question(second_id)
             keyboard = await support_keyboard(message,messages="one", user_id=message.from_user.id)
@@ -89,7 +88,7 @@ async def get_support_message(message: types.Message, state: FSMContext):
                                           caption=message.caption)
             except Exception:
                 print('')
-
+            lang = db.get_lang(second_id)
 
             await bot.send_message(second_id,_("Yana savol bolsa /ask buyrugini ishlating",lang))
     await state.reset_state()
