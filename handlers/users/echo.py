@@ -18,17 +18,23 @@ async def bot_echo(message: types.Message):
 async def bot_echo(message: types.Message,state: FSMContext):
     if message.text == "O'zbek tili":
         db.change_lang(message.from_user.id, 'uz')
-        await message.answer("Til o'zbek tiliga o'zgartirildi",reply_markup=ReplyKeyboardRemove())
-    if message.text == "Русский язык":
+        await message.answer("Til o'zgartirildi",reply_markup=ReplyKeyboardRemove())
+        await state.finish()
+    elif message.text == "Русский язык":
         db.change_lang(message.from_user.id, 'ru')
-        await message.answer("Язык изменился на русском",reply_markup=ReplyKeyboardRemove())
-    await state.finish()
+        await message.answer("Язык был обновлен",reply_markup=ReplyKeyboardRemove())
+        await state.finish()
+    else:
+        await state.finish()
+
 # Эхо хендлер, куда летят текстовые сообщения без указанного состояния
 @dp.message_handler(state=None)
 async def bot_echo(message: types.Message):
-    lang=db.get_lang(message.from_user.id)
-    await message.answer(_('Yuqoridagi tugmalardan birini tanlang',lang))
-
+    try:
+        lang=db.get_lang(message.from_user.id)
+        await message.answer(_('Iltimos operator javobini kuting!',lang))
+    except Exception as e:
+        await message.answer('Iltimos operator javobini kuting!')
 
 # Эхо хендлер, куда летят ВСЕ сообщения с указанным состоянием
 @dp.message_handler(state="*", content_types=types.ContentTypes.ANY)
@@ -37,7 +43,7 @@ async def bot_echo_all(message: types.Message, state: FSMContext):
     state = await state.get_state()
     try:
         lang=db.get_lang(message.from_user.id)
-        await message.answer(_('Pastdagi tugmani bosing tugmani bosing',lang))
+        await message.answer(_('Pastdagi tugmani bosing',lang))
     except Exception as e:
 
         await message.answer(_('Tugmani bosing',lang))

@@ -15,7 +15,7 @@ cb_data = callback_data.CallbackData("/ask", "param1", "param2")
 
 # Define a callback query handler
 @dp.message_handler(Command("ask"))
-async def ask_support(message: types.Message):
+async def ask_support(message: types.Message, state: FSMContext):
     if not db.user_exists(message.from_user.id):
         await bot.send_message(message.from_user.id, 'Assalomu aleykum, Protestim  yordamchi botiga hush kelibsiz! ')
         await bot.send_message(message.from_user.id, 'Tilni tanlang: ', reply_markup=langMenu)
@@ -23,27 +23,40 @@ async def ask_support(message: types.Message):
     else:
         lang = db.get_lang(message.from_user.id)
 
-        text = _("Texnik yordam bilan bog'lanmoqchimisiz? Quyidagi tugmani bosing", lang)
-        keyboard = await support_keyboard(message, messages="one")
-        await message.answer(text, reply_markup=keyboard)
+        user_id = 5657091547
+        lang = db.get_lang(message.from_user.id)
 
+        try:
+
+            await message.answer(_("Savolingizni yoki murojatingizni 1 ta habar orqali yuboring.", lang))
+        except Exception as ex:
+            await message.answer(_("Savolingizni yoki murojatingizni 1 ta habar orqali yuboring.", lang))
+        await state.set_state("wait_for_support_message")
+        await state.update_data(second_id=user_id)
 @dp.callback_query_handler(support_callback.filter(messages="one"))
 async def send_to_support(call: types.CallbackQuery, state: FSMContext, callback_data: dict):
 
     await call.answer()
     user_id = int(callback_data.get("user_id"))
-    lang = db.get_lang(call.from_user.id)
 
-    await call.message.answer(_("Siz yubormoqchi bo'lgan savolingizni to'liq shaklda yuboring",lang))
 
+
+    try:
+        lang = db.get_lang(call.from_user.id)
+        await call.message.answer(_("Savolingizni yoki murojatingizni 1 ta habar orqali yuboring.",lang))
+    except Exception as ex:
+        await call.message.answer("Savolingizni yoki murojatingizni 1 ta habar orqali yuboring.")
     await state.set_state("wait_for_support_message")
     await state.update_data(second_id=user_id)
 
 
 @dp.message_handler(state="wait_for_support_message", content_types=types.ContentTypes.ANY)
 async def get_support_message(message: types.Message, state: FSMContext):
-    lang = db.get_lang(message.from_user.id)
-    await message.answer(_('sizni savolingiz bizning operatorlarga yuborildi yaqin orada sizga javob beramiz',lang))
+    try:
+        lang = db.get_lang(message.from_user.id)
+        await message.answer(_('Savolingiz / Murojatingiz bizning operatorlarga yuborildi, yaqin orada sizga javob beramiz!',lang))
+    except:
+        await message.answer('Savolingiz / Murojatingiz bizning operatorlarga yuborildi, yaqin orada sizga javob beramiz!')
     data = await state.get_data()
     second_id = data.get("second_id")
     name=db.get_name(message.from_user.id)
@@ -60,10 +73,10 @@ async def get_support_message(message: types.Message, state: FSMContext):
                 await message.copy_to(second_id,caption=f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.caption}", reply_markup=keyboard)
             else:
                 await bot.send_message(second_id,
-                                       f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.text}",
+                                       f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri <code>{phone}</code>\nSavol {message.text}",
                                        reply_markup=keyboard)
             if message.text==None:
-                await message.copy_to(-1001712239399,caption=f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.caption}", reply_markup=keyboard)
+                await message.copy_to(-1001712239399,caption=f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri <code>{phone}</code>\nSavol {message.caption}", reply_markup=keyboard)
             else:
                 await bot.send_message(-1001712239399,
                                        f"Sizga {str(name)} userdan xat \n telegramdagi accaunti @{message.from_user.username}\n nomeri {phone}\nSavol {message.text}")
@@ -90,7 +103,7 @@ async def get_support_message(message: types.Message, state: FSMContext):
                 print('')
             lang = db.get_lang(second_id)
 
-            await bot.send_message(second_id,_("Yana savol bolsa /ask buyrugini ishlating",lang))
+            await bot.send_message(second_id,_("Yana savolingiz yoki murojatingiz bo'lsa, /ask orqali berishingiz mumkin.",lang))
     await state.reset_state()
 @dp.callback_query_handler(cancel_support_callback.filter(), state=["in_support", "wait_in_support", None])
 async def exit_support(call: types.CallbackQuery, state: FSMContext, callback_data: dict):
@@ -106,3 +119,12 @@ async def exit_support(call: types.CallbackQuery, state: FSMContext, callback_da
 
     await call.message.answer("Protestim bu sizni  bilimingzini ssinash uchun qilingan platforma")
     await state.reset_state()
+
+@dp.message_handler(Command("about"))
+async def bot_help(message: types.Message):
+    try:
+        lang = db.get_lang(message.from_user.id)
+        text = (_("ProTestim - DTM imtihon simulyator platformasi bo'lib, unda havfsiz va hohlagan marobata test topshirib, quyidagi ma'lumotlarga ega bo'ling:\n1. Oliy Ta'lim muassasalarining reytingi\n2. Siz kirmoqchi bo'lgan Ta'lim Muassasasiga qanchalik tayyor ekanligizni\n3. Hozirgi bilimingiz darajasi\n4. Bilimingiz darajasi bilan qaysi Ta'lim Muassasalariga Grant yoki Kontrakt asosida kirishingizni\n5. Qaysi fanda yoki yo'nalishda bilimingizni kuchaytirish kerak ekanligini", lang))
+    except Exception as e:
+        text = ("ProTestim - DTM imtihon simulyator platformasi bo'lib, unda havfsiz va hohlagan marobata test topshirib, quyidagi ma'lumotlarga ega bo'ling:\n1. Oliy Ta'lim muassasalarining reytingi\n2. Siz kirmoqchi bo'lgan Ta'lim Muassasasiga qanchalik tayyor ekanligizni\n3. Hozirgi bilimingiz darajasi\n4. Bilimingiz darajasi bilan qaysi Ta'lim Muassasalariga Grant yoki Kontrakt asosida kirishingizni\n5. Qaysi fanda yoki yo'nalishda bilimingizni kuchaytirish kerak ekanligini")
+    await message.answer(text, reply_markup=ReplyKeyboardRemove())

@@ -37,5 +37,8 @@ class ThrottlingMiddleware(BaseMiddleware):
 
     async def message_throttled(self, message: types.Message, throttled: Throttled):
         if throttled.exceeded_count <= 2:
-            lang = db.get_lang(message.from_user.id)
-            await message.reply(_("Juda ko'p so'rovlar!",lang))
+            try:
+                lang = db.get_lang(message.from_user.id)
+                await message.reply(_("Juda ko'p so'rovlar!",lang))
+            except Exception as ex:
+                await message.reply("Juda ko'p so'rovlar!")

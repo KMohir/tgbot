@@ -3,7 +3,7 @@ from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher, FSMContext
 from aiogram.dispatcher.filters import Command
 
-from keyboards.default.reply import get_lang_for_button, get_lang_for_button1, changelang
+from keyboards.default.reply import get_lang_for_button, get_lang_for_button, changelang
 from keyboards.inline.support import  yesno
 from states.state import answer
 from aiogram.utils import executor

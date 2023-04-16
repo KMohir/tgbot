@@ -44,19 +44,6 @@ def get_lang_for_button(message):
 #     )
 #     return button
 
-def get_lang_for_button1(message):
-    lang = db.get_lang(message.from_user.id)
-    button=ReplyKeyboardMarkup(
-        keyboard=[
-
-            [
-                KeyboardButton(text=_("Texnik yordam bilan suhbatlashish",lang))
-            ],
-
-        ],
-        resize_keyboard=True
-    )
-    return button
 
 def change_lang():
 
@@ -93,7 +80,7 @@ def key(lang):
 
             keyboard=[[
 
-                KeyboardButton(text="Agar raqamingizni yubormoqchi bo'lsangiz, ustiga bosing",
+                KeyboardButton(text="Kontakni yuborish",
                                request_contact=True
 
                                )
@@ -107,7 +94,7 @@ def key(lang):
 
             keyboard=[[
 
-                KeyboardButton(text="Нажмите на это, если хотите отправить свой номер",
+                KeyboardButton(text="Отправить контакт",
                                request_contact=True
 
                                )

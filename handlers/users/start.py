@@ -17,15 +17,18 @@ global lang
 async def bot_start(message: types.Message):
 
     if not db.user_exists(message.from_user.id):
-        await bot.send_message(message.from_user.id,'Assalomu aleykum, Protestim  yordamchi botiga hush kelibsiz! ')
-        await bot.send_message(message.from_user.id,'Tilni tanlang: ',reply_markup=langMenu)
+        await bot.send_message(message.from_user.id,'Assalomu aleykum, ProTestim yordamchi botiga hush kelibsiz!\nЗдраствуйте, добро пожаловать в бот поддержки ProTestim!')
+        await bot.send_message(message.from_user.id,'Tilni tanlang:\nВыберите язык:',reply_markup=langMenu)
         await RegistrationStates.lang.set()
     else:
         try:
+
             lang = db.get_lang(message.from_user.id)
-            await bot.send_message(message.from_user.id, _('Operator bilan /ask ni bosip boglansez boladi',lang),reply_markup=ReplyKeyboardRemove())
+            text = (_("Buyruqlar ro'yxati:\n/ask - Texnik yordamga habar yozish\n/change_language - Tilni o'zgartish\n/about - ProTestim haqida bilish", lang))
+
+            await bot.send_message(message.from_user.id,text,reply_markup=ReplyKeyboardRemove())
         except:
-            await bot.send_message(message.from_user.id, 'Operator bilan /ask ni bosip boglansez boladi',
+            await bot.send_message(message.from_user.id, "Buyruqlar ro'yxati:\n/ask - Texnik yordamga habar yozish\n/change_language - Tilni o'zgartish\n/about - ProTestim haqida bilish",
                                    reply_markup=ReplyKeyboardRemove())
     # else:
     #     lang=db.get_lang(message.from_user.id)
@@ -41,7 +44,7 @@ async def bot_start(message: types.Message):
 
 @dp.callback_query_handler(text_contains="lang_",state=RegistrationStates.lang)
 async def set_lang(call: types.CallbackQuery, state: FSMContext):
-
+    await call.answer()
     if not db.user_exists(call.from_user.id):
 
         lang=call.data[5:]
@@ -51,9 +54,9 @@ async def set_lang(call: types.CallbackQuery, state: FSMContext):
 
 
         if lang =='uz':
-            await bot.send_message(call.from_user.id,"Ismingizni kiriting")
+            await bot.send_message(call.from_user.id,"Ism familiyangizni kiriting")
         elif lang =='ru':
-            await bot.send_message(call.from_user.id, "Введите свое имя")
+            await bot.send_message(call.from_user.id, "Введите свое имя и фамилию")
 
 
         await RegistrationStates.name.set()
@@ -70,15 +73,34 @@ async def register_command_handler(message: types.Message, state: FSMContext):
 
         data['name'] = name
     if lang=="uz":
-        await message.answer("Raqamingizni yuborish uchun pastdagi tugmani bosing",reply_markup=key(lang))
+        await message.answer("Telefon raqamingizni kiriting")
     elif lang=="ru":
-        await message.answer("Нажмите кнопку ниже, чтобы отправить свой номер", reply_markup=key(lang))
+        await message.answer("Введите свой номер телефона")
     await RegistrationStates.end.set()
 
 # Name handler
 
 # Phone handler
 
+@dp.message_handler(state=RegistrationStates.end, content_types=types.ContentType.TEXT)
+async def process_name(message: Message, state: FSMContext):
+    data = await state.get_data()
+    lang=data.get('lang')
+    contact =message.text
+    if contact[0:4]=='+998':
+        data = await state.get_data()
+        name = data.get('name')
+        lan=data.get('lang')
+        # contact = message.contact.phone_number
+        data = await state.get_data()
+        db.update(lan,message.from_user.id,name,contact)
+        lang = db.get_lang(message.from_user.id)
+        await message.answer(_("Ro'yxatdan muvaffaqiyatli o'tdingiz!",lang), reply_markup=ReplyKeyboardRemove())
+        await message.answer(_("Buyruqlar ro'yxati bilan tanishish uchun /help ni bosing.", lang))
+        await RegistrationStates.help.set()
+    else:
+        await message.answer(_("Telefon raqam noto'g'ri kiritildi, iltimos telefon raqamni +998XXXXXXXX formatda kiriting yoki 'Kontakni yuborish' tugmasiga bosing.",lang),reply_markup=key(lang))
+        await RegistrationStates.end.set()
 
 
 @dp.message_handler(state=RegistrationStates.end, content_types=types.ContentType.CONTACT)
@@ -91,11 +113,12 @@ async def process_name(message: Message, state: FSMContext):
     data = await state.get_data()
     db.update(lan,message.from_user.id,name,contact)
     lang = db.get_lang(message.from_user.id)
-    await message.answer(_("Ro'yxatdan o'tdingiz",lang), reply_markup=ReplyKeyboardRemove())
-    text = _("Texnik yordam bilan bog'lanmoqchimisiz? Quyidagi tugmani bosing", lang)
-    keyboard = await support_keyboard(message, messages="one")
-    await message.answer(text, reply_markup=keyboard)
-    await state.finish()
+    await message.answer(_("Ro'yxatdan muvaffaqiyatli o'tdingiz!",lang), reply_markup=ReplyKeyboardRemove())
+    await message.answer(_("Buyruqlar ro'yxati bilan tanishish uchun /help ni bosing.", lang))
+    await RegistrationStates.help.set()
+
+
+
 
 
 

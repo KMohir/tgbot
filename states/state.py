@@ -15,3 +15,5 @@ class RegistrationStates(StatesGroup):
     name = State()
     phone = State()
     end = State()
+    number=State()
+    help = State()
