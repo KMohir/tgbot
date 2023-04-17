@@ -10,6 +10,8 @@ from translation import _
 
 
 @dp.message_handler(text="/change_language")
+@dp.message_handler(text="Tilni o'zgartirish")
+@dp.message_handler(text="Изменить язык")
 async def bot_echo(message: types.Message):
     lang=db.get_lang(message.from_user.id)
     await message.answer(_('Tilni tanlang',lang),reply_markup=change_lang())
@@ -18,11 +20,11 @@ async def bot_echo(message: types.Message):
 async def bot_echo(message: types.Message,state: FSMContext):
     if message.text == "O'zbek tili":
         db.change_lang(message.from_user.id, 'uz')
-        await message.answer("Til o'zgartirildi",reply_markup=ReplyKeyboardRemove())
+        await message.answer("Til o'zgartirildi",reply_markup=get_lang_for_button(message))
         await state.finish()
     elif message.text == "Русский язык":
         db.change_lang(message.from_user.id, 'ru')
-        await message.answer("Язык был обновлен",reply_markup=ReplyKeyboardRemove())
+        await message.answer("Язык был обновлен",reply_markup=get_lang_for_button(message))
         await state.finish()
     else:
         await state.finish()

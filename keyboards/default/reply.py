@@ -9,11 +9,14 @@ def get_lang_for_button(message):
     button=ReplyKeyboardMarkup(
         keyboard=[
             [
-                KeyboardButton(text=_("Texnik yordamga xabar yozish",lang)
+                KeyboardButton(text=_("Texnik yordamga habar yozish",lang)
     )
             ],
             [
-                KeyboardButton(text=_("Texnik yordam bilan suhbatlashish",lang))
+                KeyboardButton(text=_("Tilni o'zgartirish",lang))
+            ],
+            [
+                KeyboardButton(text=_("ProTestim haqida bilish", lang))
             ],
 
         ],

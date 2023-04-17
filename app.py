@@ -7,7 +7,6 @@ from utils.notify_admins import on_startup_notify
 
 
 async def on_startup(dispatcher):
-    # Уведомляет про запуск
     await set_default_commands(dispatcher)
     await on_startup_notify(dispatcher)
 

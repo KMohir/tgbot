@@ -15,6 +15,8 @@ cb_data = callback_data.CallbackData("/ask", "param1", "param2")
 
 # Define a callback query handler
 @dp.message_handler(Command("ask"))
+@dp.message_handler(text="Написать в техническую поддержку")
+@dp.message_handler(text="Texnik yordamga habar yozish")
 async def ask_support(message: types.Message, state: FSMContext):
     if not db.user_exists(message.from_user.id):
         await bot.send_message(message.from_user.id, 'Assalomu aleykum, Protestim  yordamchi botiga hush kelibsiz! ')
@@ -121,10 +123,12 @@ async def exit_support(call: types.CallbackQuery, state: FSMContext, callback_da
     await state.reset_state()
 
 @dp.message_handler(Command("about"))
+@dp.message_handler(text="ProTestim haqida bilish")
+@dp.message_handler(text="Узнать про ProTestim")
 async def bot_help(message: types.Message):
     try:
         lang = db.get_lang(message.from_user.id)
         text = (_("ProTestim - DTM imtihon simulyator platformasi bo'lib, unda havfsiz va hohlagan marobata test topshirib, quyidagi ma'lumotlarga ega bo'ling:\n1. Oliy Ta'lim muassasalarining reytingi\n2. Siz kirmoqchi bo'lgan Ta'lim Muassasasiga qanchalik tayyor ekanligizni\n3. Hozirgi bilimingiz darajasi\n4. Bilimingiz darajasi bilan qaysi Ta'lim Muassasalariga Grant yoki Kontrakt asosida kirishingizni\n5. Qaysi fanda yoki yo'nalishda bilimingizni kuchaytirish kerak ekanligini", lang))
     except Exception as e:
         text = ("ProTestim - DTM imtihon simulyator platformasi bo'lib, unda havfsiz va hohlagan marobata test topshirib, quyidagi ma'lumotlarga ega bo'ling:\n1. Oliy Ta'lim muassasalarining reytingi\n2. Siz kirmoqchi bo'lgan Ta'lim Muassasasiga qanchalik tayyor ekanligizni\n3. Hozirgi bilimingiz darajasi\n4. Bilimingiz darajasi bilan qaysi Ta'lim Muassasalariga Grant yoki Kontrakt asosida kirishingizni\n5. Qaysi fanda yoki yo'nalishda bilimingizni kuchaytirish kerak ekanligini")
-    await message.answer(text, reply_markup=ReplyKeyboardRemove())
+    await message.answer(text)

@@ -30,7 +30,10 @@ translations={
         "Iltimos operator javobini kuting!":"Пожалуйста ожидайте ответа оператора!",
         "Yana savolingiz yoki murojatingiz bo'lsa, /ask orqali berishingiz mumkin.":"Если у вас еще есть вопросы или обращение, нажмите на /ask.",
         "ProTestim - DTM imtihon simulyator platformasi bo'lib, unda havfsiz va hohlagan marobata test topshirib, quyidagi ma'lumotlarga ega bo'ling:\n1. Oliy Ta'lim muassasalarining reytingi\n2. Siz kirmoqchi bo'lgan Ta'lim Muassasasiga qanchalik tayyor ekanligizni\n3. Hozirgi bilimingiz darajasi\n4. Bilimingiz darajasi bilan qaysi Ta'lim Muassasalariga Grant yoki Kontrakt asosida kirishingizni\n5. Qaysi fanda yoki yo'nalishda bilimingizni kuchaytirish kerak ekanligini":
-        "ProTestim - это ДТМ-симулятор платформа, в которой вы можете безопасно пройти тестовые экзамены сколько вам угодно и ознакомиться со следующей информацией:\n1. Рейтинг Высших Учебных заведений\n2. Насколько вы готовы поступить в вами предпочитаемое Высшее Учебное заведение\n3. Свои актуальные знания\n4. В какие Университеты вы можете поступить на Грант или Контракт основе с вашими актуальными знаниями\n5. В какой области или по какому предмету вам нужно улучшить свои знания"
+        "ProTestim - это ДТМ-симулятор платформа, в которой вы можете безопасно пройти тестовые экзамены сколько вам угодно и ознакомиться со следующей информацией:\n1. Рейтинг Высших Учебных заведений\n2. Насколько вы готовы поступить в вами предпочитаемое Высшее Учебное заведение\n3. Свои актуальные знания\n4. В какие Университеты вы можете поступить на Грант или Контракт основе с вашими актуальными знаниями\n5. В какой области или по какому предмету вам нужно улучшить свои знания",
+        "Texnik yordamga habar yozish":"Написать в техническую поддержку",
+        "Tilni o'zgartish":"Изменить язык",
+        "ProTestim haqida bilish":"Узнать про ProTestim",
     }
 
 }

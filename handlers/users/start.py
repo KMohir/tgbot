@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters.builtin import CommandStart
 from aiogram.types import ParseMode, Message, ReplyKeyboardRemove
 
 from db import db
-from keyboards.default.reply import key
+from keyboards.default.reply import key, get_lang_for_button
 from keyboards.inline.support import langMenu, support_keyboard
 from loader import dp, bot
 
@@ -21,15 +21,15 @@ async def bot_start(message: types.Message):
         await bot.send_message(message.from_user.id,'Tilni tanlang:\nВыберите язык:',reply_markup=langMenu)
         await RegistrationStates.lang.set()
     else:
+
         try:
 
             lang = db.get_lang(message.from_user.id)
-            text = (_("Buyruqlar ro'yxati:\n/ask - Texnik yordamga habar yozish\n/change_language - Tilni o'zgartish\n/about - ProTestim haqida bilish", lang))
-
+            text = (_("Buyruqlar ro'yxati:\n/ask - Texnik yordamga habar yozish\n/change_language - Tilni o'zgartish\n/about - ProTestim haqida bilish", lang),get_lang_for_button(message))
             await bot.send_message(message.from_user.id,text,reply_markup=ReplyKeyboardRemove())
         except:
             await bot.send_message(message.from_user.id, "Buyruqlar ro'yxati:\n/ask - Texnik yordamga habar yozish\n/change_language - Tilni o'zgartish\n/about - ProTestim haqida bilish",
-                                   reply_markup=ReplyKeyboardRemove())
+                                   reply_markup=get_lang_for_button(message))
     # else:
     #     lang=db.get_lang(message.from_user.id)
     #
@@ -73,9 +73,9 @@ async def register_command_handler(message: types.Message, state: FSMContext):
 
         data['name'] = name
     if lang=="uz":
-        await message.answer("Telefon raqamingizni kiriting")
+        await message.answer("Telefon raqamingizni kiriting",reply_markup=key(lang))
     elif lang=="ru":
-        await message.answer("Введите свой номер телефона")
+        await message.answer("Введите свой номер телефона",reply_markup=key(lang))
     await RegistrationStates.end.set()
 
 # Name handler
@@ -96,8 +96,15 @@ async def process_name(message: Message, state: FSMContext):
         db.update(lan,message.from_user.id,name,contact)
         lang = db.get_lang(message.from_user.id)
         await message.answer(_("Ro'yxatdan muvaffaqiyatli o'tdingiz!",lang), reply_markup=ReplyKeyboardRemove())
-        await message.answer(_("Buyruqlar ro'yxati bilan tanishish uchun /help ni bosing.", lang))
-        await RegistrationStates.help.set()
+
+
+        lang = db.get_lang(message.from_user.id)
+        text = (
+            _("Buyruqlar ro'yxati:\n/ask - Texnik yordamga habar yozish\n/change_language - Tilni o'zgartish\n/about - ProTestim haqida bilish",
+              lang))
+
+        await message.answer(text, reply_markup=get_lang_for_button(message))
+        await state.finish()
     else:
         await message.answer(_("Telefon raqam noto'g'ri kiritildi, iltimos telefon raqamni +998XXXXXXXX formatda kiriting yoki 'Kontakni yuborish' tugmasiga bosing.",lang),reply_markup=key(lang))
         await RegistrationStates.end.set()
@@ -114,8 +121,15 @@ async def process_name(message: Message, state: FSMContext):
     db.update(lan,message.from_user.id,name,contact)
     lang = db.get_lang(message.from_user.id)
     await message.answer(_("Ro'yxatdan muvaffaqiyatli o'tdingiz!",lang), reply_markup=ReplyKeyboardRemove())
-    await message.answer(_("Buyruqlar ro'yxati bilan tanishish uchun /help ni bosing.", lang))
-    await RegistrationStates.help.set()
+
+
+    lang = db.get_lang(message.from_user.id)
+    text = (
+        _("Buyruqlar ro'yxati:\n/ask - Texnik yordamga habar yozish\n/change_language - Tilni o'zgartish\n/about - ProTestim haqida bilish",
+          lang))
+
+    await message.answer(text, reply_markup=get_lang_for_button(message))
+    await state.finish()
 
 
 
