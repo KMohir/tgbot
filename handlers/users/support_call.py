@@ -6,6 +6,7 @@ from aiogram.utils import callback_data
 
 from data.config import support_ids
 from db import db
+from keyboards.default.reply import get_lang_for_button
 from keyboards.inline.support import support_keyboard, support_callback, langMenu, cancel_support_callback
 from loader import dp, bot
 from states.state import questions, RegistrationStates
@@ -30,9 +31,9 @@ async def ask_support(message: types.Message, state: FSMContext):
 
         try:
 
-            await message.answer(_("Savolingizni yoki murojatingizni 1 ta habar orqali yuboring.", lang))
+            await message.answer(_("Savolingizni yoki murojatingizni 1 ta habar orqali yuboring.", lang),reply_markup=ReplyKeyboardRemove())
         except Exception as ex:
-            await message.answer(_("Savolingizni yoki murojatingizni 1 ta habar orqali yuboring.", lang))
+            await message.answer(_("Savolingizni yoki murojatingizni 1 ta habar orqali yuboring.", lang),reply_markup=ReplyKeyboardRemove())
         await state.set_state("wait_for_support_message")
         await state.update_data(second_id=user_id)
 @dp.callback_query_handler(support_callback.filter(messages="one"))
@@ -56,9 +57,9 @@ async def send_to_support(call: types.CallbackQuery, state: FSMContext, callback
 async def get_support_message(message: types.Message, state: FSMContext):
     try:
         lang = db.get_lang(message.from_user.id)
-        await message.answer(_('Savolingiz / Murojatingiz bizning operatorlarga yuborildi, yaqin orada sizga javob beramiz!',lang))
+        await message.answer(_('Savolingiz / Murojatingiz bizning operatorlarga yuborildi, yaqin orada sizga javob beramiz!',lang),reply_markup=get_lang_for_button(message))
     except:
-        await message.answer('Savolingiz / Murojatingiz bizning operatorlarga yuborildi, yaqin orada sizga javob beramiz!')
+        await message.answer('Savolingiz / Murojatingiz bizning operatorlarga yuborildi, yaqin orada sizga javob beramiz!',reply_markup=get_lang_for_button(message))
     data = await state.get_data()
     second_id = data.get("second_id")
     name=db.get_name(message.from_user.id)
