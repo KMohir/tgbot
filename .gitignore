@@ -1,0 +1,7 @@
+<<<<<<< HEAD
+venv/
+=======
+.env
+.idea
+databaseprotestim.db
+>>>>>>> 241d93f (Complete telegram bot)
